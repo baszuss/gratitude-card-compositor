@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="{{LANG}}">
+<head>
+<meta charset="UTF-8" />
+<title>Gratitude Movement – Employee Acrylic Sign</title>
+
+<style>
+  /* ============================================================
+     GRATITUDE MOVEMENT – 5 x 7 INCH ACRYLIC PRINT TEMPLATE
+     Aligned to the approved mock per SOP locked 2026-09-09:
+       - NO photo well (do not add one; do not put a logo in it)
+       - ONE QR only (no second "learn more" QR)
+     PRINT SIZE: 5in wide x 7in high (portrait)
+
+     MERGE FIELDS (compositor fills these before handing to Playwright):
+       {{LANG}}                  - "en" or "es"
+       {{EMPLOYEE_NAME}}         - Employee_Full_Name
+       {{EMPLOYEE_TITLE}}        - Employee_Title
+       {{EMPLOYEE_SPECIALTY}}    - Employee_Specialty (optional; blank hides the line)
+       {{QR_IMAGE_SRC}}          - QR_Image_URL (same QR on both EN and ES renders)
+
+     COPY FIELDS (compositor fills from the EN/ES string table — see SOP section 3.2):
+       {{TAGLINE}} {{QUESTION_HERO}} {{QUESTION_TODAY}}
+       {{SCAN_CTA}} {{TIP_NOTE}} {{FOOTER_THANKS}}
+       {{ICON_SERVICE}} {{ICON_PEOPLE}} {{ICON_TOGETHER}}
+
+     IMPORTANT — {{QUESTION_LEAD}} is NOT a raw string-table lookup. The string table's
+     question_lead value contains its own {first} placeholder (e.g. "Did {first} help you" /
+     "¿Te ayudó {first} a"). The compositor must substitute Employee_First_Name into that
+     string FIRST, then pass the fully-resolved phrase in as {{QUESTION_LEAD}}. Do not fill
+     {{QUESTION_LEAD}} with the raw string-table value.
+
+     Employee name/title/specialty are never translated — same value on both renders.
+     ============================================================ */
+
+  @page {
+    size: 5in 7in;
+    margin: 0;
+  }
+
+  :root {
+    --navy: #06192e;
+    --gold: #c89435;
+    --gold-light: #e3bb67;
+    --cream: #f8f4ec;
+    --muted: #d9d2c5;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    width: 5in;
+    height: 7in;
+    margin: 0;
+    padding: 0;
+    background: var(--navy);
+    font-family: Georgia, "Times New Roman", serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .sign {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 5in;
+    height: 7in;
+    overflow: hidden;
+    color: var(--cream);
+    background:
+      radial-gradient(circle at 50% -5%, rgba(255,255,255,.09), transparent 34%),
+      linear-gradient(180deg, #071c33 0%, #06192e 76%, #c89435 100%);
+    border: 0.035in solid var(--gold);
+  }
+
+  .top {
+    flex: 0 0 auto;
+    height: 0.95in;
+    padding: 0.16in 0.28in 0;
+    text-align: center;
+    border-bottom: 0.012in solid rgba(200,148,53,.85);
+  }
+
+  .brand {
+    font-size: 0.36in;
+    line-height: .9;
+    letter-spacing: .01in;
+    color: var(--cream);
+  }
+
+  .brand span {
+    display: block;
+    margin-top: 0.05in;
+    font-family: Arial, sans-serif;
+    font-size: 0.11in;
+    letter-spacing: .07in;
+    color: var(--gold-light);
+  }
+
+  .tagline {
+    margin-top: 0.09in;
+    font-family: Arial, sans-serif;
+    font-size: 0.07in;
+    letter-spacing: .025in;
+    color: var(--muted);
+  }
+
+  .heart { color: var(--gold); }
+
+  /* No photo well by design — identity block is text-only */
+  .employee {
+    flex: 0 0 auto;
+    padding: 0.42in 0.3in 0.14in;
+    text-align: center;
+  }
+
+  .name {
+    font-size: 0.36in;
+    line-height: 1;
+    color: var(--gold-light);
+    font-style: italic;
+  }
+
+  .role {
+    margin-top: 0.08in;
+    font-family: Arial, sans-serif;
+    font-size: 0.11in;
+    font-weight: 700;
+    letter-spacing: .05in;
+    text-transform: uppercase;
+    color: var(--cream);
+  }
+
+  .specialty {
+    margin-top: 0.04in;
+    font-family: Arial, sans-serif;
+    font-size: 0.085in;
+    letter-spacing: .035in;
+    text-transform: uppercase;
+    color: var(--gold-light);
+  }
+
+  .specialty:empty {
+    display: none;
+  }
+
+  .question {
+    flex: 0 0 auto;
+    padding: 0.05in 0.32in 0.12in;
+    text-align: center;
+    font-size: 0.19in;
+    line-height: 1.15;
+  }
+
+  .question strong {
+    display: block;
+    margin-top: 0.05in;
+    font-size: 0.25in;
+    letter-spacing: .01in;
+    color: var(--cream);
+  }
+
+  .scan-label {
+    flex: 0 0 auto;
+    margin: 0.02in auto 0.08in;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 0.12in;
+    font-weight: 700;
+    letter-spacing: .03in;
+    color: var(--gold-light);
+  }
+
+  .main-qr-wrap {
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+  }
+
+  .main-qr {
+    width: 1.85in;
+    height: 1.85in;
+    padding: 0.07in;
+    background: #fff;
+    border: 0.04in solid var(--gold);
+    border-radius: 0.09in;
+  }
+
+  .main-qr img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
+  }
+
+  .tip-note {
+    flex: 0 0 auto;
+    margin: 0.1in 0.3in 0;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 0.085in;
+    line-height: 1.3;
+    color: var(--cream);
+  }
+
+  .footer {
+    flex: 0 0 auto;
+    margin-top: auto;
+    min-height: 0.68in;
+    padding: 0.12in 0.28in 0.24in;
+    text-align: center;
+    background: linear-gradient(90deg, #b77f23, #e1b35a, #b77f23);
+    color: var(--navy);
+  }
+
+  .footer .message {
+    font-size: 0.1in;
+    font-style: italic;
+  }
+
+  .footer .icons {
+    margin-top: 0.05in;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.08in 0.16in;
+    font-family: Arial, sans-serif;
+    font-size: 0.058in;
+    font-weight: 700;
+    letter-spacing: .01in;
+  }
+
+  @media print {
+    html, body { width: 5in; height: 7in; }
+    .sign { page-break-after: always; }
+  }
+</style>
+</head>
+
+<body>
+  <section class="sign">
+
+    <header class="top">
+      <div class="brand">Gratitude <span>MOVEMENT™</span></div>
+      <div class="tagline">{{TAGLINE}}</div>
+    </header>
+
+    <!-- EMPLOYEE IDENTITY — text only, no photo well per locked SOP -->
+    <section class="employee">
+      <div class="name">{{EMPLOYEE_NAME}}</div>
+      <div class="role">{{EMPLOYEE_TITLE}}</div>
+      <div class="specialty">{{EMPLOYEE_SPECIALTY}}</div>
+    </section>
+
+    <section class="question">
+      {{QUESTION_LEAD}}
+      <strong>{{QUESTION_HERO}}</strong>
+      <span class="heart">{{QUESTION_TODAY}} ♥</span>
+    </section>
+
+    <div class="scan-label">{{SCAN_CTA}}</div>
+
+    <!-- ONE QR only — the employee Thank You QR. No second "learn more" QR. -->
+    <div class="main-qr-wrap">
+      <div class="main-qr">
+        <img src="{{QR_IMAGE_SRC}}" alt="Thank You QR" />
+      </div>
+    </div>
+
+    <div class="tip-note">{{TIP_NOTE}}</div>
+
+    <footer class="footer">
+      <div class="message">{{FOOTER_THANKS}}</div>
+      <div class="icons">
+        <span>♡ {{ICON_SERVICE}}</span>
+        <span>♡ {{ICON_PEOPLE}}</span>
+        <span>◉ {{ICON_TOGETHER}}</span>
+      </div>
+    </footer>
+
+  </section>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "gratitude-card-compositor",
+  "version": "1.0.0",
+  "description": "Renders the 5x7 EN/ES print-ready employee Thank You cards via Playwright, triggered by a GHL webhook.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "postinstall": "npx playwright install --with-deps chromium"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "playwright": "^1.47.0",
+    "dotenv": "^16.4.5"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
