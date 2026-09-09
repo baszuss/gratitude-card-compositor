@@ -1,14 +1,17 @@
 // src/ghl.js
 //
-// PATCHes Card_PDF_URL_EN, Card_PDF_URL_ES, and Card_Status back onto the GHL Contact
+// Updates Card_PDF_URL_EN, Card_PDF_URL_ES, and Card_Status back onto the GHL Contact
 // once both PDFs are rendered and hosted. Field IDs are opaque GHL custom-field IDs —
 // set these in your .env (see .env.example), copied from GHL: Settings > Custom Fields.
+//
+// Per GHL's official docs (marketplace.gohighlevel.com/docs/ghl/contacts/update-contact):
+// method is PUT (not PATCH), Version header must be "v3", and the custom field
+// value key is "fieldValue" (camelCase), not "field_value".
 
 const GHL_API_BASE = "https://services.leadconnectorhq.com";
 
 async function patchContactCardFields(contactId, { cardPdfUrlEn, cardPdfUrlEs, cardStatus }) {
   const apiKey = process.env.GHL_API_KEY;
-  const apiVersion = process.env.GHL_API_VERSION || "2021-07-28";
 
   if (!apiKey) throw new Error("GHL_API_KEY is not set");
 
@@ -25,24 +28,24 @@ async function patchContactCardFields(contactId, { cardPdfUrlEn, cardPdfUrlEs, c
 
   const body = {
     customFields: [
-      { id: fieldIdEn, field_value: cardPdfUrlEn },
-      { id: fieldIdEs, field_value: cardPdfUrlEs },
-      { id: fieldIdStatus, field_value: cardStatus },
+      { id: fieldIdEn, fieldValue: cardPdfUrlEn },
+      { id: fieldIdEs, fieldValue: cardPdfUrlEs },
+      { id: fieldIdStatus, fieldValue: cardStatus },
     ],
   };
 
   const res = await fetch(`${GHL_API_BASE}/contacts/${contactId}`, {
-    method: "PATCH",
+    method: "PUT",
     headers: {
       Authorization: `Bearer ${apiKey}`,
-      Version: apiVersion,
+      Version: "v3",
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
   });
 
   if (!res.ok) {
-    throw new Error(`GHL PATCH failed: ${res.status} ${await res.text()}`);
+    throw new Error(`GHL update failed: ${res.status} ${await res.text()}`);
   }
 
   return res.json();
