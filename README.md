@@ -13,6 +13,10 @@ webhook. Deploys as a standalone Railway Node service, per the locked SOP (2026-
    - `GHL_API_KEY`, `GHL_API_VERSION`
    - `GHL_FIELD_ID_CARD_PDF_URL_EN`, `GHL_FIELD_ID_CARD_PDF_URL_ES`, `GHL_FIELD_ID_CARD_STATUS`
      (copy these opaque IDs from GHL: Settings → Custom Fields)
+   - `GRATITUDE_APP_API_URL` = the PRODUCTION (published, not preview) URL of Lovable's
+     internal employee-lookup endpoint, e.g. `https://gratitude-movement.com/api/internal/employee-lookup`
+   - `CARD_COMPOSITOR_SHARED_SECRET` = the exact secret you generated and saved into Lovable's
+     `CARD_COMPOSITOR_SHARED_SECRET` field — must match exactly on both sides
    - `POSTMARK_SERVER_TOKEN`, `EMAIL_FROM` (confirm Postmark is actually your provider first —
      see the note in `src/email.js`)
    - `PUBLIC_BASE_URL` = the Railway domain from step 3
@@ -35,19 +39,21 @@ is set, add a **Webhook** action:
 ```json
 {
   "contact_id": "{{contact.id}}",
-  "employee_full_name": "{{contact.employee_full_name}}",
-  "employee_first_name": "{{contact.employee_first_name}}",
-  "employee_title": "{{contact.employee_title}}",
-  "employee_specialty": "{{contact.employee_specialty}}",
-  "employee_slug": "{{contact.employee_slug}}",
+  "employee_email": "{{contact.email}}",
   "client_slug": "{{contact.hotel_location_id}}",
   "qr_image_url": "{{contact.qr_image_url}}",
   "client_print_email": "{{contact.client_print_email}}"
 }
 ```
 
-Adjust the merge tag names to match whatever your actual GHL custom field keys are — the names
-above are guesses based on the SOP's field table, not confirmed against your GHL account.
+GHL is the trigger only here — per Dimitri's correction, it does not hold employee identity
+(no `Employee_Slug` field exists in GHL). The compositor looks up the real name/title/slug
+from Supabase's `employees` table, joined by `employee_email`. Adjust merge tag names above to
+match your actual GHL fields if they differ.
+
+**Important:** `qr_image_url` must already encode the correct Supabase `qr_slug` in its
+destination (e.g. `.../thank-you?e={qr_slug}`) — generated in Phase 2 using the live Supabase
+slug, since GHL has no slug of its own.
 
 ## Testing locally before deploying
 
@@ -64,13 +70,9 @@ curl -X POST http://localhost:3000/webhook/card \
   -H "Content-Type: application/json" \
   -d '{
     "contact_id": "test123",
-    "employee_full_name": "Maya Chen",
-    "employee_first_name": "Maya",
-    "employee_title": "Stylist",
-    "employee_specialty": "Color & Cut",
-    "employee_slug": "maya-chen",
+    "employee_email": "uzcateguileonsebastian@gmail.com",
     "client_slug": "TestHotel",
-    "qr_image_url": "https://api.qrserver.com/v1/create-qr-code/?data=https://ty.gratitude-movement.com/thank-you?e=maya-chen",
+    "qr_image_url": "https://api.qrserver.com/v1/create-qr-code/?data=https://ty.gratitude-movement.com/thank-you?e=test-hotel-7vhsiw",
     "client_print_email": "your-own-email@example.com"
   }'
 ```
