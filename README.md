@@ -13,8 +13,9 @@ webhook. Deploys as a standalone Railway Node service, per the locked SOP (2026-
    - `GHL_API_KEY`, `GHL_API_VERSION`
    - `GHL_FIELD_ID_CARD_PDF_URL_EN`, `GHL_FIELD_ID_CARD_PDF_URL_ES`, `GHL_FIELD_ID_CARD_STATUS`
      (copy these opaque IDs from GHL: Settings → Custom Fields)
-   - `GRATITUDE_APP_API_URL` = the PRODUCTION (published, not preview) URL of Lovable's
-     internal employee-lookup endpoint, e.g. `https://gratitude-movement.com/api/internal/employee-lookup`
+   - `GRATITUDE_APP_API_URL` = production (published)  
+     `https://gratitude-movement.com/api/internal/employee-lookup`  
+     (not the public `GET /api/public/employee-lookup?e=` guest route)
    - `CARD_COMPOSITOR_SHARED_SECRET` = the exact secret you generated and saved into Lovable's
      `CARD_COMPOSITOR_SHARED_SECRET` field — must match exactly on both sides
    - `POSTMARK_SERVER_TOKEN`, `EMAIL_FROM` (confirm Postmark is actually your provider first —
