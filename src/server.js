@@ -100,12 +100,8 @@ async function processCardJob({ body }) {
   const cardPdfUrlEn = `${baseUrl.replace(/\/$/, "")}/files/${fileNameEn}`;
   const cardPdfUrlEs = `${baseUrl.replace(/\/$/, "")}/files/${fileNameEs}`;
 
-  await patchContactCardFields(body.contact_id, {
-    cardPdfUrlEn,
-    cardPdfUrlEs,
-    cardStatus: "Files Ready",
-  });
-
+  // Email first — this is the part we most need to verify works, and it shouldn't
+  // be blocked by GHL field issues (missing/wrong custom field IDs, etc.).
   await sendCardEmail({
     toEmail: body.client_print_email,
     employeeFullName: employee.full_name,
@@ -114,11 +110,17 @@ async function processCardJob({ body }) {
     fileBaseName,
   });
 
-  await patchContactCardFields(body.contact_id, {
-    cardPdfUrlEn,
-    cardPdfUrlEs,
-    cardStatus: "Emailed",
-  });
+  // GHL patch-back is best-effort: log failures instead of aborting the job.
+  // A missing/invalid GHL_FIELD_ID_* shouldn't stop the client from getting their PDFs.
+  try {
+    await patchContactCardFields(body.contact_id, {
+      cardPdfUrlEn,
+      cardPdfUrlEs,
+      cardStatus: "Emailed",
+    });
+  } catch (err) {
+    console.error(`[GHL patch failed, non-fatal] contact_id=${body.contact_id}:`, err.message);
+  }
 
   console.log(`[card job done] contact_id=${body.contact_id} -> ${fileBaseName}`);
 }

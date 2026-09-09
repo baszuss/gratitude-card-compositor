@@ -6,7 +6,11 @@ const { chromium } = require("playwright");
  * Per SOP 3.4: 5in x 7in, 0 margin, print background graphics, 300 DPI equivalent.
  */
 async function renderPdf(html) {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({
+    // Required in most containerized environments (Railway, Docker, etc.) —
+    // Chromium refuses to launch as root without these flags.
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
   try {
     const page = await browser.newPage({
       deviceScaleFactor: 3, // 300 DPI equivalent, per SOP
