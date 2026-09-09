@@ -8,7 +8,7 @@ const crypto = require("crypto");
 const { renderHtmlForLang } = require("./template");
 const { renderPdf } = require("./render");
 const { patchContactCardFields } = require("./ghl");
-const { sendCardEmail } = require("./email");
+const { sendCardEmailViaGHL } = require("./ghlEmail");
 const { fetchEmployeeByEmail } = require("./appApi");
 
 const app = express();
@@ -100,14 +100,14 @@ async function processCardJob({ body }) {
   const cardPdfUrlEn = `${baseUrl.replace(/\/$/, "")}/files/${fileNameEn}`;
   const cardPdfUrlEs = `${baseUrl.replace(/\/$/, "")}/files/${fileNameEs}`;
 
-  // Email first — this is the part we most need to verify works, and it shouldn't
-  // be blocked by GHL field issues (missing/wrong custom field IDs, etc.).
-  await sendCardEmail({
+  // Email via GHL's own Conversations API — no third-party email provider needed.
+  // Attachments are the same public URLs used for the field patch below.
+  await sendCardEmailViaGHL({
+    contactId: body.contact_id,
     toEmail: body.client_print_email,
     employeeFullName: employee.full_name,
-    pdfEnBuffer,
-    pdfEsBuffer,
-    fileBaseName,
+    cardPdfUrlEn,
+    cardPdfUrlEs,
   });
 
   // GHL patch-back is best-effort: log failures instead of aborting the job.
