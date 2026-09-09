@@ -100,11 +100,16 @@ async function processCardJob({ body }) {
   const cardPdfUrlEn = `${baseUrl.replace(/\/$/, "")}/files/${fileNameEn}`;
   const cardPdfUrlEs = `${baseUrl.replace(/\/$/, "")}/files/${fileNameEs}`;
 
-  // Email via GHL's own Conversations API — no third-party email provider needed.
-  // Attachments are the same public URLs used for the field patch below.
+  // TEMPORARY, FOR TESTING ONLY: GHL's Conversations API rejects emailTo unless
+  // it's a registered address on the contact (primary or additional email).
+  // client_print_email is a hotel address, not the employee's own — sending to
+  // it while tagged to the employee's contact fails with
+  // CONVERSATIONS_MSG_INVALID_EMAILTO. Real fix: send via a hotel-level GHL
+  // contact instead of the employee's contact. Until that's resolved, this
+  // sends to the employee's own email just to prove the mechanism works.
   await sendCardEmailViaGHL({
     contactId: body.contact_id,
-    toEmail: body.client_print_email,
+    toEmail: body.employee_email, // NOT client_print_email — see note above
     employeeFullName: employee.full_name,
     cardPdfUrlEn,
     cardPdfUrlEs,
