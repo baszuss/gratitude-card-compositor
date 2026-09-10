@@ -1,7 +1,8 @@
 # Shared status (Dimitri + Sebastian)
 **Do not use chat paste as the source of truth.** Update this file (or a GitHub Issue that links here) when a row finishes. Pull before you start a task.
 
-**Repos:** this compositor · `sifu-max/gratitude-attitude` (Lovable)
+**Repos:** this compositor · `sifu-max/gratitude-attitude` (Lovable)  
+**Shared Drive:** https://drive.google.com/drive/folders/1SUEJzm6sxN1mBkTj47Ngta4Tf3x1xX2L?usp=drive_link
 
 **Jocelyn tomorrow:** hotel **onboarding**, not 5×7 print. Print stays later.
 
@@ -29,7 +30,8 @@ never sit there. Fix: destination charge on `POST /v1/gratuities` —
 webhook Transfer retry (ledger written ≠ paid). Contract updated in
 `gratitude-attitude/docs/payment-engine-contract.md`.
 
-Full brief: Drive `BRIEF_Sebastian_2026-09-10.md`.
+Full brief: Shared Drive → `BRIEF_Sebastian_2026-09-10.md`  
+https://drive.google.com/drive/folders/1SUEJzm6sxN1mBkTj47Ngta4Tf3x1xX2L?usp=drive_link
 
 ### Bugs found + fixed tonight (worth knowing about)
 
