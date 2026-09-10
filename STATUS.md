@@ -22,6 +22,14 @@
 
 GHL is **trigger only**. Identity = Supabase via the internal lookup. Guest page = `GET /api/public/employee-lookup?e=`.
 
+## Payment engine (Sebastian — P0)
+
+Live tips charged the **platform** (`transfer_data: null`). Staff net must
+never sit there. Fix: destination charge on `POST /v1/gratuities` —
+`transfer_data.destination` + `application_fee_amount`. Also keep the
+webhook Transfer retry (ledger written ≠ paid). Contract updated in
+`gratitude-attitude/docs/payment-engine-contract.md`.
+
 ## Hotel onboard (Jocelyn tomorrow)
 
 Path already in product: `/onboard` → GHL → admin approve → `/join/<code>` → `POST /api/admin/sync-ghl`. Remaining: confirm GHL field keys, secrets, one dry-run (`?dry=1`).
