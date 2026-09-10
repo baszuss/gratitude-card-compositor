@@ -21,6 +21,16 @@
 
 GHL is **trigger only**. Identity = Supabase via the internal lookup. Guest page = `GET /api/public/employee-lookup?e=`.
 
+## Payment engine (Sebastian — P0)
+
+Live tips charged the **platform** (`transfer_data: null`). Staff net must
+never sit there. Fix: destination charge on `POST /v1/gratuities` —
+`transfer_data.destination` + `application_fee_amount`. Also keep the
+webhook Transfer retry (ledger written ≠ paid). Contract updated in
+`gratitude-attitude/docs/payment-engine-contract.md`.
+
+Full brief: Drive `BRIEF_Sebastian_2026-09-10.md`.
+
 ### Bugs found + fixed tonight (worth knowing about)
 
 - Railway's default Node build was missing Chromium's system libraries (`libglib-2.0.so.0` etc.) — fixed by switching to a Dockerfile using Microsoft's official Playwright image.
