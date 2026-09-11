@@ -38,6 +38,7 @@ async function fetchEmployeeByEmail(email) {
     title: data.title || "",
     specialty: "", // no distinct specialty field — leave blank (hides the line)
     qr_slug: data.qr_slug,
+    photo_url: data.photo_url || "",
   };
 }
 

@@ -7,16 +7,18 @@
 <style>
   /* ============================================================
      GRATITUDE MOVEMENT – 5 x 7 INCH ACRYLIC PRINT TEMPLATE
-     Aligned to the approved mock per SOP locked 2026-09-09:
-       - NO photo well (do not add one; do not put a logo in it)
+     Aligned to SOP + SPEC_Unified_Employee_Landing_2026-09-10:
+       - Photo well when {{EMPLOYEE_PHOTO_URL}} is set; hide if empty (no logo in the well)
        - ONE QR only (no second "learn more" QR)
      PRINT SIZE: 5in wide x 7in high (portrait)
 
      MERGE FIELDS (compositor fills these before handing to Playwright):
        {{LANG}}                  - "en" or "es"
        {{EMPLOYEE_NAME}}         - Employee_Full_Name
-       {{EMPLOYEE_TITLE}}        - Employee_Title
+       {{EMPLOYEE_TITLE}}         - Employee_Title
        {{EMPLOYEE_SPECIALTY}}    - Employee_Specialty (optional; blank hides the line)
+       {{EMPLOYEE_PHOTO_URL}}    - headshot or Gratitude logo placeholder
+       {{PHOTO_CLASS}}           - "" or "is-placeholder"
        {{QR_IMAGE_SRC}}          - QR_Image_URL (same QR on both EN and ES renders)
 
      COPY FIELDS (compositor fills from the EN/ES string table — see SOP section 3.2):
@@ -107,12 +109,24 @@
 
   .heart { color: var(--gold); }
 
-  /* No photo well by design — identity block is text-only */
   .employee {
     flex: 0 0 auto;
-    padding: 0.42in 0.3in 0.14in;
+    padding: 0.18in 0.3in 0.1in;
     text-align: center;
   }
+
+  .photo {
+    display: block;
+    width: 1.05in;
+    height: 1.05in;
+    margin: 0 auto 0.1in;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 0.03in solid var(--gold);
+    background: #fff;
+  }
+
+  .photo.is-placeholder { object-fit: contain; }
 
   .name {
     font-size: 0.36in;
@@ -240,15 +254,16 @@
 </head>
 
 <body>
-  <section class="sign">
+  <section class="{{SIGN_CLASS}}">
 
     <header class="top">
       <div class="brand">Gratitude <span>MOVEMENT™</span></div>
       <div class="tagline">{{TAGLINE}}</div>
     </header>
 
-    <!-- EMPLOYEE IDENTITY — text only, no photo well per locked SOP -->
+    <!-- EMPLOYEE IDENTITY — photo when {{EMPLOYEE_PHOTO_URL}} set; compositor adds class no-photo if empty -->
     <section class="employee">
+      <img class="photo {{PHOTO_CLASS}}" src="{{EMPLOYEE_PHOTO_URL}}" alt="" />
       <div class="name">{{EMPLOYEE_NAME}}</div>
       <div class="role">{{EMPLOYEE_TITLE}}</div>
       <div class="specialty">{{EMPLOYEE_SPECIALTY}}</div>

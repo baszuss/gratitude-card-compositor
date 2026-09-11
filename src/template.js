@@ -13,12 +13,21 @@ const RAW_TEMPLATE = fs.readFileSync(TEMPLATE_PATH, "utf8");
  */
 function renderHtmlForLang(lang, employee) {
   const copy = getResolvedStrings(lang, employee.first_name);
+  const PLACEHOLDER =
+    "https://gratitude-movement.com/__l5e/assets-v1/ff2dcc11-0506-40b5-8035-7a8e3f3592e0/cap_logo.jpeg";
+  const photoUrl =
+    typeof employee.photo_url === "string" && /^https?:\/\//i.test(employee.photo_url.trim())
+      ? employee.photo_url.trim()
+      : PLACEHOLDER;
 
   const tokens = {
     LANG: lang,
+    SIGN_CLASS: "sign",
+    PHOTO_CLASS: photoUrl === PLACEHOLDER ? "is-placeholder" : "",
     EMPLOYEE_NAME: escapeHtml(employee.full_name),
     EMPLOYEE_TITLE: escapeHtml(employee.title),
     EMPLOYEE_SPECIALTY: escapeHtml(employee.specialty || ""),
+    EMPLOYEE_PHOTO_URL: photoUrl,
     QR_IMAGE_SRC: employee.qr_image_url, // trusted HTTPS URL from GHL, not user input
     TAGLINE: copy.tagline,
     QUESTION_LEAD: copy.question_lead,

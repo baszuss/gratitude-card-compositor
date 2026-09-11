@@ -77,6 +77,7 @@ async function processCardJob({ body }) {
     title: supabaseEmployee.title,
     specialty: supabaseEmployee.specialty,
     qr_image_url: body.qr_image_url, // this came from GHL (Phase 2) — already encodes the right slug
+    photo_url: supabaseEmployee.photo_url || "",
   };
 
   const fileBaseName = `${body.client_slug}_${supabaseEmployee.qr_slug}`;
