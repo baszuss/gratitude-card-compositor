@@ -8,16 +8,21 @@
 
 **Jocelyn:** hotel onboard SOP only. **Sebastian** owns photo on GHL intake, custom HTML, Thank You, and 5×7 (placeholder if missing).
 
-## Go-live — unified landing + photo (open)
+## Go-live — unified landing + photo
 
 | ID | Owner | Task | Status |
 |---|---|---|---|
-| GL-S1 | Sebastian | Native GHL **Employee Photo** File Upload on staff survey | **Open** |
-| GL-S2 | Sebastian | Custom enrollment HTML: photo well + native file embed; placeholder if none | **Open** |
-| GL-S3 | Sebastian | Thank You: `photo_url` or Gratitude logo placeholder | **Open** |
-| GL-S4 | Sebastian | 5×7: `photo_url` or placeholder; QR stays `thank-you?e=` | **Open** |
-| GL-A1 | Dimitri / Cursor | Lookups + `sync-ghl` `photo_url` | **Code in repo** — publish Lovable + migration |
+| GL-S1 | Sebastian | Native GHL **Employee Photo** File Upload on staff survey | **Done** (Sebas `bab5523`) — Filesafe URL on Contact |
+| GL-S2 | Sebastian | Custom enrollment HTML + native file embed | **Done** — e2e name/email/phone/photo on same Contact |
+| GL-S3 | Sebastian | Thank You: `photo_url` or logo placeholder | **Done** — confirmed live |
+| GL-S4 | Sebastian | 5×7 placeholder + one QR | **Done** — already in `64fae8f`; real headshot waits on GL-A1 |
+| GL-A1 | Dimitri / Cursor | Lookups + `sync-ghl` `photo_url` | **In progress** — lookup already returns `photo_url` (Jasmin still `null`). Sync copies Contact **Employee Photo** Filesafe URL; no n8n. Wider field-key match + `photos_ready` on dry-run. Publish + Check for new signups. |
 | GL-D1 | Dimitri | Small live destination-charge tip from Thank You | **Open** |
+
+### Bugs found + fixed (Sebastian, 11 Sep)
+
+- Photo-only GHL iframe needs `form_embed.js` on the **parent** page or upload fails silently. `/join` now loads that script if either survey iframe is present.
+- Duplicate Custom HTML on the enrollment survey (same element IDs, stale script last) overwrote the working block. Audit other GHL steps for the same pattern.
 
 ## Print compositor
 
