@@ -8,7 +8,7 @@ const crypto = require("crypto");
 const { renderHtmlForLang } = require("./template");
 const { renderPdf } = require("./render");
 const { patchContactCardFields } = require("./ghl");
-const { sendCardEmail } = require("./email");
+const { sendCardEmailViaGHL } = require("./ghlEmail");
 const { fetchEmployeeByEmail } = require("./appApi");
 
 const app = express();
@@ -101,25 +101,32 @@ async function processCardJob({ body }) {
   const cardPdfUrlEn = `${baseUrl.replace(/\/$/, "")}/files/${fileNameEn}`;
   const cardPdfUrlEs = `${baseUrl.replace(/\/$/, "")}/files/${fileNameEs}`;
 
-  await patchContactCardFields(body.contact_id, {
-    cardPdfUrlEn,
-    cardPdfUrlEs,
-    cardStatus: "Files Ready",
-  });
-
-  await sendCardEmail({
-    toEmail: body.client_print_email,
+  // TEMPORARY, FOR TESTING ONLY: GHL's Conversations API rejects emailTo unless
+  // it's a registered address on the contact (primary or additional email).
+  // client_print_email is a hotel address, not the employee's own — sending to
+  // it while tagged to the employee's contact fails with
+  // CONVERSATIONS_MSG_INVALID_EMAILTO. Real fix: send via a hotel-level GHL
+  // contact instead of the employee's contact. Until that's resolved, this
+  // sends to the employee's own email just to prove the mechanism works.
+  await sendCardEmailViaGHL({
+    contactId: body.contact_id,
+    toEmail: body.employee_email, // NOT client_print_email — see note above
     employeeFullName: employee.full_name,
-    pdfEnBuffer,
-    pdfEsBuffer,
-    fileBaseName,
-  });
-
-  await patchContactCardFields(body.contact_id, {
     cardPdfUrlEn,
     cardPdfUrlEs,
-    cardStatus: "Emailed",
   });
+
+  // GHL patch-back is best-effort: log failures instead of aborting the job.
+  // A missing/invalid GHL_FIELD_ID_* shouldn't stop the client from getting their PDFs.
+  try {
+    await patchContactCardFields(body.contact_id, {
+      cardPdfUrlEn,
+      cardPdfUrlEs,
+      cardStatus: "Emailed",
+    });
+  } catch (err) {
+    console.error(`[GHL patch failed, non-fatal] contact_id=${body.contact_id}:`, err.message);
+  }
 
   console.log(`[card job done] contact_id=${body.contact_id} -> ${fileBaseName}`);
 }
