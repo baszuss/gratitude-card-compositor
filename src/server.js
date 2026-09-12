@@ -101,28 +101,31 @@ async function processCardJob({ body }) {
   const cardPdfUrlEn = `${baseUrl.replace(/\/$/, "")}/files/${fileNameEn}`;
   const cardPdfUrlEs = `${baseUrl.replace(/\/$/, "")}/files/${fileNameEs}`;
 
-  // TEMPORARY, FOR TESTING ONLY: GHL's Conversations API rejects emailTo unless
-  // it's a registered address on the contact (primary or additional email).
-  // client_print_email is a hotel address, not the employee's own — sending to
-  // it while tagged to the employee's contact fails with
-  // CONVERSATIONS_MSG_INVALID_EMAILTO. Real fix: send via a hotel-level GHL
-  // contact instead of the employee's contact. Until that's resolved, this
-  // sends to the employee's own email just to prove the mechanism works.
-  await sendCardEmailViaGHL({
-    contactId: body.contact_id,
-    toEmail: body.employee_email, // NOT client_print_email — see note above
-    employeeFullName: employee.full_name,
-    cardPdfUrlEn,
-    cardPdfUrlEs,
-  });
+  // Until go-live: render + write URLs on the Contact, do not auto-email.
+  // Set CARD_EMAIL_ENABLED=1 on Railway only when ops green-lights GHL send.
+  // GHL Conversations is the send path (not Postmark). It currently only accepts
+  // emailTo on the Contact being messaged — hotel Client_Print_Email fails
+  // (CONVERSATIONS_MSG_INVALID_EMAILTO). Manual send until that is fixed.
+  const emailEnabled = process.env.CARD_EMAIL_ENABLED === "1";
+  if (emailEnabled) {
+    await sendCardEmailViaGHL({
+      contactId: body.contact_id,
+      toEmail: body.employee_email,
+      employeeFullName: employee.full_name,
+      cardPdfUrlEn,
+      cardPdfUrlEs,
+    });
+  } else {
+    console.log(
+      `[card email held] contact_id=${body.contact_id} en=${cardPdfUrlEn} es=${cardPdfUrlEs}`,
+    );
+  }
 
-  // GHL patch-back is best-effort: log failures instead of aborting the job.
-  // A missing/invalid GHL_FIELD_ID_* shouldn't stop the client from getting their PDFs.
   try {
     await patchContactCardFields(body.contact_id, {
       cardPdfUrlEn,
       cardPdfUrlEs,
-      cardStatus: "Emailed",
+      cardStatus: emailEnabled ? "Emailed" : "Ready — hold for ops email",
     });
   } catch (err) {
     console.error(`[GHL patch failed, non-fatal] contact_id=${body.contact_id}:`, err.message);

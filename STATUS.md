@@ -35,7 +35,7 @@
 | S2 | Sebastian | GHL webhook `POST /webhook/card` (email join, not GHL slug) | Done — real GHL Contact, full run, no errors |
 | S3 | Sebastian | GHL custom field IDs on Railway | Done — `Card_PDF_URL_EN/ES`, `Card_Status` all populate correctly on the real Contact |
 | S4 | Sebastian | Railway deploy + env | Done — see bugs fixed below |
-| S5 | Sebastian | Confirm email provider (Postmark vs other) | **Resolved differently than planned** — using GHL's own Conversations API instead of Postmark, no third-party provider needed. See open question below. |
+| S5 | Sebastian | Confirm email provider (Postmark vs other) | **GHL Conversations** is the send path (not Postmark). **Hold until go-live:** `CARD_EMAIL_ENABLED` default off — Jocelyn emails PDFs by hand. Auto-send to hotel mailbox still blocked (`CONVERSATIONS_MSG_INVALID_EMAILTO`). |
 | S6 | Sebastian | One employee scan + 5×7 QA | **Done** — iPhone scan confirmed, real PDF rendered and verified (EN + ES). Android scan also confirmed working. |
 
 GHL is **trigger only**. Identity = Supabase via the internal lookup. Guest page = `GET /api/public/employee-lookup?e=`.
