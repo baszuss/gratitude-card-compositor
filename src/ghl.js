@@ -1,7 +1,7 @@
 // src/ghl.js
 //
 // Updates Card_PDF_URL_EN, Card_PDF_URL_ES, and Card_Status back onto the GHL Contact
-// once both PDFs are rendered and hosted. Field IDs are opaque GHL custom-field IDs —
+// once both PDFs are rendered and hosted. Field IDs are opaque GHL custom-field IDs -
 // set these in your .env (see .env.example), copied from GHL: Settings > Custom Fields.
 //
 // Per GHL's official docs (marketplace.gohighlevel.com/docs/ghl/contacts/update-contact):
@@ -21,7 +21,7 @@ async function patchContactCardFields(contactId, { cardPdfUrlEn, cardPdfUrlEs, c
 
   if (!fieldIdEn || !fieldIdEs || !fieldIdStatus) {
     throw new Error(
-      "GHL_FIELD_ID_CARD_PDF_URL_EN / _ES / GHL_FIELD_ID_CARD_STATUS must be set — " +
+      "GHL_FIELD_ID_CARD_PDF_URL_EN / _ES / GHL_FIELD_ID_CARD_STATUS must be set - " +
         "copy these custom field IDs from GHL Settings > Custom Fields.",
     );
   }
@@ -51,4 +51,33 @@ async function patchContactCardFields(contactId, { cardPdfUrlEn, cardPdfUrlEs, c
   return res.json();
 }
 
-module.exports = { patchContactCardFields };
+// Finds-or-creates a Contact by email. Used for the hotel print-recipient
+// email, which has no dedicated Contact of its own upstream - GHL's upsert
+// endpoint returns the existing contact if the email already exists, or
+// creates one if not, either way handing back a usable contactId.
+async function upsertContactByEmail(email) {
+  const apiKey = process.env.GHL_API_KEY;
+  const locationId = process.env.GHL_LOCATION_ID;
+
+  if (!apiKey) throw new Error("GHL_API_KEY is not set");
+  if (!locationId) throw new Error("GHL_LOCATION_ID is not set");
+
+  const res = await fetch(`${GHL_API_BASE}/contacts/upsert`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      Version: "2021-07-28",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ locationId, email }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`GHL upsert failed: ${res.status} ${await res.text()}`);
+  }
+
+  const data = await res.json();
+  return data.contact.id;
+}
+
+module.exports = { patchContactCardFields, upsertContactByEmail };
