@@ -1,7 +1,7 @@
 // src/template.js
 const fs = require("fs");
 const path = require("path");
-const { getResolvedStrings, escapeHtml } = require("./stringTable");
+const { getResolvedStrings, escapeHtml, formatPropertyDisplayName } = require("./stringTable");
 
 const TEMPLATE_PATH = path.join(__dirname, "..", "public", "template.html");
 const RAW_TEMPLATE = fs.readFileSync(TEMPLATE_PATH, "utf8");
@@ -25,8 +25,9 @@ function renderHtmlForLang(lang, employee) {
     SIGN_CLASS: "sign",
     PHOTO_CLASS: photoUrl === PLACEHOLDER ? "is-placeholder" : "",
     EMPLOYEE_NAME: escapeHtml(employee.full_name),
-    EMPLOYEE_TITLE: escapeHtml(employee.title),
-    EMPLOYEE_SPECIALTY: escapeHtml(employee.specialty || ""),
+    EMPLOYEE_TITLE: escapeHtml(formatPropertyDisplayName(employee.title, lang)),
+    EMPLOYEE_SPECIALTY: escapeHtml(formatPropertyDisplayName(employee.specialty || "", lang)),
+    BRAND_WORD: copy.brand_word,
     EMPLOYEE_PHOTO_URL: photoUrl,
     QR_IMAGE_SRC: employee.qr_image_url, // trusted HTTPS URL from GHL, not user input
     TAGLINE: copy.tagline,

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Jasmin Emilia — 5×7 print</title>
+<style>
+  @page { size: 5in 7in; margin: 0; }
+  :root {
+    --navy: #06192e;
+    --gold: #c89435;
+    --gold-light: #e3bb67;
+    --cream: #f8f4ec;
+    --muted: #d9d2c5;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #333;
+  }
+  .sign {
+    width: 5in;
+    height: 7in;
+    margin: 0 auto 0.4in;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    color: var(--cream);
+    background:
+      radial-gradient(circle at 50% -5%, rgba(255,255,255,.09), transparent 34%),
+      linear-gradient(180deg, #071c33 0%, #06192e 72%, #c89435 100%);
+    border: 0.035in solid var(--gold);
+    font-family: Georgia, "Times New Roman", serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .top {
+    flex: 0 0 auto;
+    padding: 0.12in 0.24in 0.08in;
+    text-align: center;
+    border-bottom: 0.012in solid rgba(200,148,53,.85);
+  }
+  .brand { font-size: 0.3in; line-height: .9; }
+  .brand span {
+    display: block;
+    margin-top: 0.04in;
+    font-family: Arial, sans-serif;
+    font-size: 0.09in;
+    letter-spacing: .07in;
+    color: var(--gold-light);
+  }
+  .tagline {
+    margin-top: 0.06in;
+    font-family: Arial, sans-serif;
+    font-size: 0.065in;
+    letter-spacing: .02in;
+    color: var(--muted);
+  }
+  .employee { flex: 0 0 auto; padding: 0.14in 0.24in 0.06in; text-align: center; }
+  .photo {
+    width: 1.15in;
+    height: 1.15in;
+    margin: 0 auto 0.1in;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 0.03in solid var(--gold);
+    background: #fff;
+  }
+  .name { font-size: 0.28in; line-height: 1.05; color: var(--gold-light); font-style: italic; }
+  .role {
+    margin-top: 0.05in;
+    font-family: Arial, sans-serif;
+    font-size: 0.09in;
+    font-weight: 700;
+    letter-spacing: .04in;
+    text-transform: uppercase;
+  }
+  .question {
+    flex: 0 0 auto;
+    padding: 0.04in 0.28in 0.08in;
+    text-align: center;
+    font-size: 0.16in;
+    line-height: 1.15;
+  }
+  .question strong {
+    display: block;
+    margin-top: 0.04in;
+    font-size: 0.2in;
+  }
+  .heart { color: var(--gold); }
+  .scan-label {
+    font-family: Arial, sans-serif;
+    font-size: 0.1in;
+    font-weight: 700;
+    letter-spacing: .03in;
+    color: var(--gold-light);
+    text-align: center;
+  }
+  .main-qr-wrap { flex: 1 1 auto; display: flex; justify-content: center; align-items: center; }
+  .main-qr {
+    width: 1.55in;
+    height: 1.55in;
+    padding: 0.06in;
+    background: #fff;
+    border: 0.035in solid var(--gold);
+    border-radius: 0.08in;
+  }
+  .main-qr img { width: 100%; height: 100%; display: block; object-fit: contain; }
+  .tip-note {
+    font-family: Arial, sans-serif;
+    font-size: 0.07in;
+    line-height: 1.3;
+    text-align: center;
+    margin: 0.06in 0.24in 0.08in;
+  }
+  .footer {
+    margin-top: auto;
+    padding: 0.1in 0.2in 0.16in;
+    text-align: center;
+    background: linear-gradient(90deg, #b77f23, #e1b35a, #b77f23);
+    color: var(--navy);
+  }
+  .footer .message { font-size: 0.085in; font-style: italic; }
+  .footer .icons {
+    margin-top: 0.04in;
+    font-family: Arial, sans-serif;
+    font-size: 0.052in;
+    font-weight: 700;
+    letter-spacing: .01in;
+  }
+  @media print {
+    body { background: none; }
+    .sign { margin: 0; page-break-after: always; }
+    .sign:last-of-type { page-break-after: auto; }
+  }
+</style>
+</head>
+<body>
+
+<section class="sign" lang="en">
+  <header class="top">
+    <div class="brand">Gratitude <span>MOVEMENT™</span></div>
+    <div class="tagline">COMPASSION. APPRECIATION. PURPOSE.</div>
+  </header>
+  <section class="employee">
+    <img class="photo" src="jasmin.jpg" alt="Jasmin Emilia Ubri Rodriguez" />
+    <div class="name">Jasmin Emilia</div>
+    <div class="role">Owner · J &amp; I Hair Salon</div>
+  </section>
+  <section class="question">
+    Did Jasmin help you
+    <strong>LOOK &amp; FEEL AMAZING</strong>
+    <span class="heart">today? ♥</span>
+  </section>
+  <div class="scan-label">SCAN HERE TO SAY THANK YOU!</div>
+  <div class="main-qr-wrap">
+    <div class="main-qr">
+      <img src="jasmin-qr.png" alt="Thank You QR" />
+    </div>
+  </div>
+  <div class="tip-note">After sharing your Thank You, you may have the option to leave an optional digital gratuity.</div>
+  <footer class="footer">
+    <div class="message">Thank you for being part of the Gratitude Movement.</div>
+    <div class="icons">♡ GREAT SERVICE &nbsp; ♡ GREAT PEOPLE &nbsp; ◉ STRONGER TOGETHER</div>
+  </footer>
+</section>
+
+<section class="sign" lang="es">
+  <header class="top">
+    <div class="brand">Gratitud <span>MOVEMENT™</span></div>
+    <div class="tagline">COMPASIÓN. APRECIO. PROPÓSITO.</div>
+  </header>
+  <section class="employee">
+    <img class="photo" src="jasmin.jpg" alt="Jasmin Emilia Ubri Rodriguez" />
+    <div class="name">Jasmin Emilia</div>
+    <div class="role">Owner · J &amp; I Hair Salón</div>
+  </section>
+  <section class="question">
+    ¿Te ayudó Jasmin a
+    <strong>VERTE Y SENTIRTE INCREÍBLE</strong>
+    <span class="heart">¿hoy? ♥</span>
+  </section>
+  <div class="scan-label">¡ESCANEA AQUÍ PARA DAR LAS GRACIAS!</div>
+  <div class="main-qr-wrap">
+    <div class="main-qr">
+      <img src="jasmin-qr.png" alt="Thank You QR" />
+    </div>
+  </div>
+  <div class="tip-note">Después de compartir tu agradecimiento, puedes dejar una propina digital opcional.</div>
+  <footer class="footer">
+    <div class="message">Gracias por ser parte del Gratitud Movement.</div>
+    <div class="icons">♡ GRAN SERVICIO &nbsp; ♡ GRAN EQUIPO &nbsp; ◉ MÁS FUERTES JUNTOS</div>
+  </footer>
+</section>
+
+</body>
+</html>

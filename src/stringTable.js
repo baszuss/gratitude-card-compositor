@@ -5,6 +5,7 @@
 
 const STRINGS = {
   en: {
+    brand_word: "Gratitude",
     tagline: "COMPASSION. APPRECIATION. PURPOSE.",
     question_lead: "Did {first} help you", // {first} substituted below
     question_hero: "LOOK &amp; FEEL AMAZING",
@@ -18,6 +19,7 @@ const STRINGS = {
     icon_together: "STRONGER TOGETHER",
   },
   es: {
+    brand_word: "Gratitud",
     tagline: "COMPASIÓN. APRECIO. PROPÓSITO.",
     question_lead: "¿Te ayudó {first} a",
     question_hero: "VERTE Y SENTIRTE INCREÍBLE",
@@ -25,7 +27,7 @@ const STRINGS = {
     scan_cta: "¡ESCANEA AQUÍ PARA DAR LAS GRACIAS!",
     tip_note:
       "Después de compartir tu agradecimiento, puedes dejar una propina digital opcional.",
-    footer_thanks: "Gracias por ser parte del Gratitude Movement.",
+    footer_thanks: "Gracias por ser parte del Gratitud Movement.",
     icon_service: "GRAN SERVICIO",
     icon_people: "GRAN EQUIPO",
     icon_together: "MÁS FUERTES JUNTOS",
@@ -54,4 +56,10 @@ function escapeHtml(str) {
     .replaceAll('"', "&quot;");
 }
 
-module.exports = { getResolvedStrings, escapeHtml };
+/** Jocelyn 14 Sep 2026: Hairsalon / HairSalón → two words on cards. */
+function formatPropertyDisplayName(name, lang) {
+  const salon = lang === "es" ? "Hair Salón" : "Hair Salon";
+  return String(name || "").replace(/Hair\s*sal[oó]n/gi, salon);
+}
+
+module.exports = { getResolvedStrings, escapeHtml, formatPropertyDisplayName };
