@@ -20,8 +20,10 @@ const STRINGS = {
     icon_together: "STRONGER TOGETHER",
   },
   es: {
-    brand_word: "Gratitud",
-    brand_sub: "MOVIMIENTO™",
+    // Translate the name as "Movement of Gratitude" (head noun + de + gratitude),
+    // not English word order. Same pattern later: FR Mouvement de Gratitude, PT Movimento de Gratidão.
+    brand_word: "Movimiento",
+    brand_sub: "DE GRATITUD™",
     tagline: "COMPASIÓN. APRECIO. PROPÓSITO.",
     question_lead: "¿Te ayudó {first} a",
     question_hero: "VERTE Y SENTIRTE INCREÍBLE",
@@ -29,7 +31,7 @@ const STRINGS = {
     scan_cta: "¡ESCANEA AQUÍ PARA DAR LAS GRACIAS!",
     tip_note:
       "Después de compartir tu agradecimiento, puedes dejar una propina digital opcional.",
-    footer_thanks: "Gracias por ser parte del Gratitud Movimiento.",
+    footer_thanks: "Gracias por ser parte del Movimiento de Gratitud.",
     icon_service: "GRAN SERVICIO",
     icon_people: "GRAN EQUIPO",
     icon_together: "MÁS FUERTES JUNTOS",
