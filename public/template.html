@@ -15,6 +15,7 @@
      MERGE FIELDS (compositor fills these before handing to Playwright):
        {{LANG}}                  - "en" or "es"
        {{BRAND_WORD}}            - "Gratitude" (EN) or "Gratitud" (ES)
+       {{BRAND_SUB}}             - "MOVEMENT™" (EN) or "MOVIMIENTO™" (ES)
        {{EMPLOYEE_NAME}}         - Employee_Full_Name
        {{EMPLOYEE_TITLE}}         - Employee_Title
        {{EMPLOYEE_SPECIALTY}}    - Employee_Specialty (optional; blank hides the line)
@@ -258,7 +259,7 @@
   <section class="{{SIGN_CLASS}}">
 
     <header class="top">
-      <div class="brand">{{BRAND_WORD}} <span>MOVEMENT™</span></div>
+      <div class="brand">{{BRAND_WORD}} <span>{{BRAND_SUB}}</span></div>
       <div class="tagline">{{TAGLINE}}</div>
     </header>
 

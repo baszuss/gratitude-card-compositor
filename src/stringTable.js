@@ -6,6 +6,7 @@
 const STRINGS = {
   en: {
     brand_word: "Gratitude",
+    brand_sub: "MOVEMENT™",
     tagline: "COMPASSION. APPRECIATION. PURPOSE.",
     question_lead: "Did {first} help you", // {first} substituted below
     question_hero: "LOOK &amp; FEEL AMAZING",
@@ -20,6 +21,7 @@ const STRINGS = {
   },
   es: {
     brand_word: "Gratitud",
+    brand_sub: "MOVIMIENTO™",
     tagline: "COMPASIÓN. APRECIO. PROPÓSITO.",
     question_lead: "¿Te ayudó {first} a",
     question_hero: "VERTE Y SENTIRTE INCREÍBLE",
@@ -27,7 +29,7 @@ const STRINGS = {
     scan_cta: "¡ESCANEA AQUÍ PARA DAR LAS GRACIAS!",
     tip_note:
       "Después de compartir tu agradecimiento, puedes dejar una propina digital opcional.",
-    footer_thanks: "Gracias por ser parte del Gratitud Movement.",
+    footer_thanks: "Gracias por ser parte del Gratitud Movimiento.",
     icon_service: "GRAN SERVICIO",
     icon_people: "GRAN EQUIPO",
     icon_together: "MÁS FUERTES JUNTOS",

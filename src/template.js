@@ -28,6 +28,7 @@ function renderHtmlForLang(lang, employee) {
     EMPLOYEE_TITLE: escapeHtml(formatPropertyDisplayName(employee.title, lang)),
     EMPLOYEE_SPECIALTY: escapeHtml(formatPropertyDisplayName(employee.specialty || "", lang)),
     BRAND_WORD: copy.brand_word,
+    BRAND_SUB: copy.brand_sub,
     EMPLOYEE_PHOTO_URL: photoUrl,
     QR_IMAGE_SRC: employee.qr_image_url, // trusted HTTPS URL from GHL, not user input
     TAGLINE: copy.tagline,
