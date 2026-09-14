@@ -15,14 +15,14 @@
 | GL-S1 | Sebastian | Native GHL **Employee Photo** File Upload on staff survey | **Done** — field created, added to /join survey, test upload confirmed writing a Filesafe URL to the Contact |
 | GL-S2 | Sebastian | Custom enrollment HTML: photo well + native file embed; placeholder if none | **Done** — `ghl-staff-enrollment.html` updated with circular photo well (logo placeholder by default) + native GHL photo-only survey embedded via `form_embed.js`. Full end-to-end test passed: name, email, phone, job title, and photo all landing on the same Contact. |
 | GL-S3 | Sebastian | Thank You: `photo_url` or Gratitude logo placeholder | **Done** — `ghl-thank-you-personalization.html` updated so the photo circle always renders (real headshot or logo placeholder, never hidden). Confirmed live. |
-| GL-S4 | Sebastian | 5×7: `photo_url` or placeholder; QR stays `thank-you?e=` | **Already correct in this repo** — `template.js`/`template.html` (commit `64fae8f`) already fall back to the logo placeholder and render exactly one QR. No code change needed from me. Blocked only on GL-A1 actually returning `photo_url` from the lookup so real headshots show up instead of the placeholder. |
-| GL-A1 | Dimitri / Cursor | Lookups + `sync-ghl` `photo_url` | **Code in repo** — publish Lovable + migration |
+| GL-S4 | Sebastian | 5×7: `photo_url` or placeholder; QR stays `thank-you?e=` | **Already correct in this repo** — `template.js`/`template.html` (commit `64fae8f`) already fall back to the logo placeholder and render exactly one QR. Real headshots wait on GL-A1 returning `photo_url`. |
+| GL-A1 | Dimitri / Cursor | Lookups + `sync-ghl` `photo_url` | **In progress** — lookup already returns `photo_url` (Jasmin still `null`). Sync copies Contact **Employee Photo** Filesafe URL. Publish + Check for new signups. |
 | GL-D1 | Dimitri | Small live destination-charge tip from Thank You | **Open** |
 
 ### Bugs found + fixed (Sebastian, 11 Sep)
 
-- GHL's iframe embed for a photo-only survey needs its companion `form_embed.js` script loaded on the parent page — a bare `<iframe src="...">` renders visually but silently fails on file-upload submission.
-- Found a duplicate/leftover Custom HTML block on the enrollment survey step — an old, unwired copy sitting alongside the fixed one, sharing the same element IDs. The stale one's script ran last and silently overwrote the working state (this is what caused photo/name to intermittently not transfer during testing). Worth auditing other survey/page steps for the same duplicate-block pattern.
+- GHL's iframe embed for a photo-only survey needs its companion `form_embed.js` script loaded on the parent page — a bare `<iframe src="...">` renders visually but silently fails on file-upload submission. `/join` now loads that script if either survey iframe is present.
+- Duplicate/leftover Custom HTML on the enrollment survey (same element IDs, stale script last) overwrote the working block. Audit other GHL steps for the same pattern.
 
 ## Print compositor
 
@@ -35,7 +35,7 @@
 | S2 | Sebastian | GHL webhook `POST /webhook/card` (email join, not GHL slug) | Done — real GHL Contact, full run, no errors |
 | S3 | Sebastian | GHL custom field IDs on Railway | Done — `Card_PDF_URL_EN/ES`, `Card_Status` all populate correctly on the real Contact |
 | S4 | Sebastian | Railway deploy + env | Done — see bugs fixed below |
-| S5 | Sebastian | Confirm email provider (Postmark vs other) | **Resolved differently than planned** — using GHL's own Conversations API instead of Postmark, no third-party provider needed. See open question below. |
+| S5 | Sebastian | Confirm email provider (Postmark vs other) | **GHL Conversations** is the send path (not Postmark). **Hold until go-live:** `CARD_EMAIL_ENABLED` default off — Jocelyn emails PDFs by hand. Auto-send to hotel mailbox still blocked (`CONVERSATIONS_MSG_INVALID_EMAILTO`). |
 | S6 | Sebastian | One employee scan + 5×7 QA | **Done** — iPhone scan confirmed, real PDF rendered and verified (EN + ES). Android scan also confirmed working. |
 
 GHL is **trigger only**. Identity = Supabase via the internal lookup. Guest page = `GET /api/public/employee-lookup?e=`.

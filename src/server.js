@@ -17,29 +17,11 @@ app.use(express.json());
 const FILES_DIR = path.join(__dirname, "..", "files");
 if (!fs.existsSync(FILES_DIR)) fs.mkdirSync(FILES_DIR, { recursive: true });
 
-// Serve rendered PDFs publicly (this is what Card_PDF_URL_EN/ES point to)
 app.use("/files", express.static(FILES_DIR));
 
 app.get("/health", (req, res) => res.json({ ok: true }));
 
-/**
- * Expected webhook body from the GHL workflow (per Dimitri's correction, 2026-09-09):
- *
- * GHL is the TRIGGER only - tag + QR_Image_URL + hotel email. It does NOT hold
- * employee identity (no Employee_Slug field exists in GHL). Identity is loaded
- * from Supabase at render time, joined by email.
- *
- * {
- *   "contact_id": "abc123",
- *   "employee_email": "maya@example.com",   // used to join against Supabase employees.email
- *   "client_slug": "MarriottScottsdale",    // from GHL's Hotel_Location_ID - still GHL-owned
- *   "qr_image_url": "https://.../maya-chen-qr.png",  // generated in Phase 2, already encodes
- *                                                      // the correct Supabase qr_slug
- *   "client_print_email": "ops@hotel.com"
- * }
- */
 app.post("/webhook/card", async (req, res) => {
-  // Optional shared-secret check
   const expectedSecret = process.env.WEBHOOK_SHARED_SECRET;
   if (expectedSecret) {
     const provided = req.header("X-Webhook-Secret");
@@ -55,20 +37,16 @@ app.post("/webhook/card", async (req, res) => {
     return res.status(400).json({ error: `missing fields: ${missing.join(", ")}` });
   }
 
-  // Respond immediately; do the actual render/email work async so GHL's webhook
-  // doesn't time out waiting on Playwright + email delivery.
   res.status(202).json({ ok: true, message: "card generation started" });
 
   try {
     await processCardJob({ body });
   } catch (err) {
     console.error(`[card job failed] contact_id=${body.contact_id}:`, err);
-    // Consider adding retry logic or an alerting webhook here.
   }
 });
 
 async function processCardJob({ body }) {
-  // Load the real identity data from Supabase - GHL only supplied the trigger + email.
   const supabaseEmployee = await fetchEmployeeByEmail(body.employee_email);
 
   const employee = {
@@ -76,7 +54,7 @@ async function processCardJob({ body }) {
     first_name: supabaseEmployee.first_name,
     title: supabaseEmployee.title,
     specialty: supabaseEmployee.specialty,
-    qr_image_url: body.qr_image_url, // this came from GHL (Phase 2) - already encodes the right slug
+    qr_image_url: body.qr_image_url,
     photo_url: supabaseEmployee.photo_url || "",
   };
 
@@ -101,40 +79,60 @@ async function processCardJob({ body }) {
   const cardPdfUrlEn = `${baseUrl.replace(/\/$/, "")}/files/${fileNameEn}`;
   const cardPdfUrlEs = `${baseUrl.replace(/\/$/, "")}/files/${fileNameEs}`;
 
-  // Send to the hotel's print-recipient email, not the employee's own.
-  // GHL's Conversations API requires emailTo to be a registered address on the
-  // contact being messaged, so we upsert (find-or-create) a Contact whose own
-  // email IS client_print_email, then send against that contactId.
+  // Until go-live: render + write URLs on the Contact, do not auto-email.
+  // Set CARD_EMAIL_ENABLED=1 on Railway only when ops green-lights GHL send.
+  //
+  // When enabled: send via the HOTEL's own print-recipient email, not the
+  // employee's. GHL's Conversations API requires emailTo to be a registered
+  // address on the contact being messaged, so we upsert (find-or-create) a
+  // Contact whose own email IS client_print_email, then send against that
+  // contactId. (Sending to the employee's contact with a hotel email throws
+  // CONVERSATIONS_MSG_INVALID_EMAILTO - fixed 2026-09-14.)
+  const emailEnabled = process.env.CARD_EMAIL_ENABLED === "1";
   let emailSent = false;
-  try {
-    const hotelContactId = await upsertContactByEmail(body.client_print_email);
-    await sendCardEmailViaGHL({
-      contactId: hotelContactId,
-      toEmail: body.client_print_email,
-      employeeFullName: employee.full_name,
-      cardPdfUrlEn,
-      cardPdfUrlEs,
-    });
-    emailSent = true;
-  } catch (err) {
-    console.error(`[email send failed] contact_id=${body.contact_id}:`, err.message);
+
+  if (emailEnabled) {
+    try {
+      const hotelContactId = await upsertContactByEmail(body.client_print_email);
+      await sendCardEmailViaGHL({
+        contactId: hotelContactId,
+        toEmail: body.client_print_email,
+        employeeFullName: employee.full_name,
+        cardPdfUrlEn,
+        cardPdfUrlEs,
+      });
+      emailSent = true;
+    } catch (err) {
+      console.error(`[email send failed] contact_id=${body.contact_id}:`, err.message);
+    }
+  } else {
+    console.log(
+      `[card email held] contact_id=${body.contact_id} en=${cardPdfUrlEn} es=${cardPdfUrlEs}`,
+    );
   }
 
-  // GHL patch-back is best-effort for the URL fields, but Card_Status must
-  // reflect whether the email actually sent - "Emailed" only on confirmed
-  // success, "Send Failed" otherwise, so failures are visible instead of
-  // silently looking done.
+  // Card_Status reflects real outcome: held for manual send, confirmed sent,
+  // or attempted-and-failed - never silently "Emailed" unless actually sent.
+  let cardStatus;
+  if (!emailEnabled) {
+    cardStatus = "Ready — hold for ops email";
+  } else if (emailSent) {
+    cardStatus = "Emailed";
+  } else {
+    cardStatus = "Send Failed";
+  }
+
   try {
     await patchContactCardFields(body.contact_id, {
       cardPdfUrlEn,
       cardPdfUrlEs,
-      cardStatus: emailSent ? "Emailed" : "Send Failed",
+      cardStatus,
     });
   } catch (err) {
     console.error(`[GHL patch failed, non-fatal] contact_id=${body.contact_id}:`, err.message);
   }
 
-  console.log(`[card job done] contact_id=${body.contact_id} -> ${fileBaseName}, emailSent=${emailSent}`);
+  console.log(`[card job done] contact_id=${body.contact_id} -> ${fileBaseName}, emailEnabled=${emailEnabled}, emailSent=${emailSent}`);
 }
 
 const PORT = process.env.PORT || 3000;
