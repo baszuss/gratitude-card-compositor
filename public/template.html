@@ -7,9 +7,9 @@
 <style>
   /* ============================================================
      GRATITUDE MOVEMENT – 5 x 7 INCH ACRYLIC PRINT TEMPLATE
-     Aligned to SOP + SPEC_Unified_Employee_Landing_2026-09-10:
-       - Photo well when {{EMPLOYEE_PHOTO_URL}} is set; hide if empty (no logo in the well)
-       - ONE QR only (no second "learn more" QR)
+     Aligned to the original 5×7 mock + 15 Sep 2026 restore:
+       - Photo well when {{EMPLOYEE_PHOTO_URL}} is set; logo placeholder if empty
+       - Large employee Thank You QR + small static QR to https://gratitude-movement.com
      PRINT SIZE: 5in wide x 7in high (portrait)
 
      MERGE FIELDS (compositor fills these before handing to Playwright):
@@ -26,11 +26,12 @@
      COPY FIELDS (compositor fills from the EN/ES string table — see SOP section 3.2):
        {{TAGLINE}} {{QUESTION_HERO}} {{QUESTION_TODAY}}
        {{SCAN_CTA}} {{TIP_NOTE}} {{FOOTER_THANKS}}
+       {{LEARN_HEADLINE}} {{LEARN_SMALL}}
        {{ICON_SERVICE}} {{ICON_PEOPLE}} {{ICON_TOGETHER}}
 
      IMPORTANT — {{QUESTION_LEAD}} is NOT a raw string-table lookup. The string table's
-     question_lead value contains its own {first} placeholder (e.g. "Did {first} help you" /
-     "¿Te ayudó {first} a"). The compositor must substitute Employee_First_Name into that
+     question_lead value contains its own {first} placeholder (e.g. "Did {first} make you" /
+     "¿{first} te hizo"). The compositor must substitute Employee_First_Name into that
      string FIRST, then pass the fully-resolved phrase in as {{QUESTION_LEAD}}. Do not fill
      {{QUESTION_LEAD}} with the raw string-table value.
 
@@ -188,7 +189,7 @@
   }
 
   .main-qr-wrap {
-    flex: 1 1 auto;
+    flex: 0 0 auto;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -196,12 +197,12 @@
   }
 
   .main-qr {
-    width: 1.85in;
-    height: 1.85in;
-    padding: 0.07in;
+    width: 1.38in;
+    height: 1.38in;
+    padding: 0.05in;
     background: #fff;
-    border: 0.04in solid var(--gold);
-    border-radius: 0.09in;
+    border: 0.035in solid var(--gold);
+    border-radius: 0.08in;
   }
 
   .main-qr img {
@@ -213,12 +214,65 @@
 
   .tip-note {
     flex: 0 0 auto;
-    margin: 0.1in 0.3in 0;
+    margin: 0.05in 0.28in 0;
     text-align: center;
     font-family: Arial, sans-serif;
-    font-size: 0.085in;
-    line-height: 1.3;
+    font-size: 0.078in;
+    line-height: 1.25;
     color: var(--cream);
+  }
+
+  .divider {
+    flex: 0 0 auto;
+    height: 0.012in;
+    margin: 0.07in 0.28in 0.06in;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .learn-more {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: 0.78in 1fr;
+    gap: 0.12in;
+    align-items: center;
+    margin: 0 0.28in 0.08in;
+    padding: 0.06in 0 0.04in;
+    border-top: 0.012in solid rgba(200,148,53,.65);
+  }
+
+  .static-qr {
+    width: 0.70in;
+    height: 0.70in;
+    padding: 0.035in;
+    background: #fff;
+    border-radius: 0.04in;
+  }
+
+  .static-qr img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .learn-copy {
+    font-size: 0.105in;
+    line-height: 1.15;
+    color: var(--cream);
+  }
+
+  .learn-copy .headline {
+    display: block;
+    margin-bottom: 0.05in;
+    color: var(--gold-light);
+    font-size: 0.14in;
+    font-style: italic;
+  }
+
+  .learn-copy .small {
+    font-family: Arial, sans-serif;
+    font-size: 0.075in;
+    line-height: 1.25;
+    color: var(--muted);
   }
 
   .footer {
@@ -279,7 +333,7 @@
 
     <div class="scan-label">{{SCAN_CTA}}</div>
 
-    <!-- ONE QR only — the employee Thank You QR. No second "learn more" QR. -->
+    <!-- Employee Thank You QR + static site QR (https://gratitude-movement.com) -->
     <div class="main-qr-wrap">
       <div class="main-qr">
         <img src="{{QR_IMAGE_SRC}}" alt="Thank You QR" />
@@ -287,6 +341,18 @@
     </div>
 
     <div class="tip-note">{{TIP_NOTE}}</div>
+
+    <div class="divider"></div>
+
+    <section class="learn-more">
+      <div class="static-qr">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASgAAAEoAQAAAADDfFG0AAAB8ElEQVR4nO1awWpDMQyTRv//l7WDbCdtB+sp8ZhdCnl5ggrhOIpTCh/E1yegQQ3qLR4APRIIUQDFmohBV/ZX9IKAUI3xFShsb7qyv6MXCAghEUWIAJ1r1qwr+7soOrUESohF2YFXJ9Rjf1CsRoGRbdd4dUU9gChTALLigyII1Zuu7K+joBRLP3wS0pX9lfxaC68Eost9venK/k5+KQeAIE/4wfOTX88oApItlw1Y+tXaATqzP4vK/dFCKT0FAVEKF9aW/XmUt0M7egLLU/hdDLuyv6JXysIUS5titmFd2d/Kr9KGEEWEiH6e8/YWkV/Ri6jM2rKMsx5fUKRIhXFVWYnQbOr9G8otiVh7Ve9V873ZH0XZrwqSnWn515gav/ocPm+zzIOLv7J+UZx6/4oikPuhG19elGHNpn7tUaI89VhhbxEudvJri+znRANH8GFyr2ZTv1ZwnbPhrMp+IZYRa8v+FopZuYB19BbIkKw3+5Oo9A/V75LSXmyQruwv1fsYOsHWmUiYfs5rbPfbcbqmoOgZlphd2d/xq+EhGIuQm2WF74m6sr9Zv5Td+yhe5TOmfm2x39cqG9Hu4mj6q7+gcgm6fhFkZN+fYH8Etd1vq1wqlffbPj62ZX9Hr9ggU6z8IwCzQ92X/VX/degXB/WfUN+2iyD25scvWAAAAABJRU5ErkJggg==" alt="Gratitude Movement website" />
+      </div>
+      <div class="learn-copy">
+        <span class="headline">{{LEARN_HEADLINE}}</span>
+        <span class="small">{{LEARN_SMALL}}</span>
+      </div>
+    </section>
 
     <footer class="footer">
       <div class="message">{{FOOTER_THANKS}}</div>

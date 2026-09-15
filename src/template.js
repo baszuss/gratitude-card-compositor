@@ -38,6 +38,8 @@ function renderHtmlForLang(lang, employee) {
     SCAN_CTA: copy.scan_cta,
     TIP_NOTE: copy.tip_note,
     FOOTER_THANKS: copy.footer_thanks,
+    LEARN_HEADLINE: copy.learn_headline,
+    LEARN_SMALL: copy.learn_small,
     ICON_SERVICE: copy.icon_service,
     ICON_PEOPLE: copy.icon_people,
     ICON_TOGETHER: copy.icon_together,

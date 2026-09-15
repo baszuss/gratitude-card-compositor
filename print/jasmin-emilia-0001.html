@@ -98,9 +98,9 @@
   }
   .main-qr-wrap { flex: 1 1 auto; display: flex; justify-content: center; align-items: center; }
   .main-qr {
-    width: 1.55in;
-    height: 1.55in;
-    padding: 0.06in;
+    width: 1.38in;
+    height: 1.38in;
+    padding: 0.05in;
     background: #fff;
     border: 0.035in solid var(--gold);
     border-radius: 0.08in;
@@ -111,8 +111,31 @@
     font-size: 0.07in;
     line-height: 1.3;
     text-align: center;
-    margin: 0.06in 0.24in 0.08in;
+    margin: 0.06in 0.24in 0;
   }
+  .divider {
+    height: 0.012in;
+    margin: 0.06in 0.24in;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+  .learn-more {
+    display: grid;
+    grid-template-columns: 0.72in 1fr;
+    gap: 0.1in;
+    align-items: center;
+    margin: 0 0.24in 0.08in;
+  }
+  .static-qr {
+    width: 0.64in;
+    height: 0.64in;
+    padding: 0.03in;
+    background: #fff;
+    border-radius: 0.04in;
+  }
+  .static-qr img { width: 100%; height: 100%; display: block; }
+  .learn-copy { font-size: 0.095in; line-height: 1.15; }
+  .learn-copy .headline { display: block; margin-bottom: 0.04in; color: var(--gold-light); font-size: 0.12in; font-style: italic; }
+  .learn-copy .small { font-family: Arial, sans-serif; font-size: 0.07in; color: var(--muted); }
   .footer {
     margin-top: auto;
     padding: 0.1in 0.2in 0.16in;
@@ -148,8 +171,8 @@
     <div class="role">Owner · J &amp; I Hair Salon</div>
   </section>
   <section class="question">
-    Did Jasmin help you
-    <strong>LOOK &amp; FEEL AMAZING</strong>
+    Did Jasmin make you
+    <strong>FEEL AMAZING</strong>
     <span class="heart">today? ♥</span>
   </section>
   <div class="scan-label">SCAN HERE TO SAY THANK YOU!</div>
@@ -159,6 +182,16 @@
     </div>
   </div>
   <div class="tip-note">After sharing your Thank You, you may have the option to leave an optional digital gratuity.</div>
+  <div class="divider"></div>
+  <section class="learn-more">
+    <div class="static-qr">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASgAAAEoAQAAAADDfFG0AAAB8ElEQVR4nO1awWpDMQyTRv//l7WDbCdtB+sp8ZhdCnl5ggrhOIpTCh/E1yegQQ3qLR4APRIIUQDFmohBV/ZX9IKAUI3xFShsb7qyv6MXCAghEUWIAJ1r1qwr+7soOrUESohF2YFXJ9Rjf1CsRoGRbdd4dUU9gChTALLigyII1Zuu7K+joBRLP3wS0pX9lfxaC68Eost9venK/k5+KQeAIE/4wfOTX88oApItlw1Y+tXaATqzP4vK/dFCKT0FAVEKF9aW/XmUt0M7egLLU/hdDLuyv6JXysIUS5titmFd2d/Kr9KGEEWEiH6e8/YWkV/Ri6jM2rKMsx5fUKRIhXFVWYnQbOr9G8otiVh7Ve9V873ZH0XZrwqSnWn515gav/ocPm+zzIOLv7J+UZx6/4oikPuhG19elGHNpn7tUaI89VhhbxEudvJri+znRANH8GFyr2ZTv1ZwnbPhrMp+IZYRa8v+FopZuYB19BbIkKw3+5Oo9A/V75LSXmyQruwv1fsYOsHWmUiYfs5rbPfbcbqmoOgZlphd2d/xq+EhGIuQm2WF74m6sr9Zv5Td+yhe5TOmfm2x39cqG9Hu4mj6q7+gcgm6fhFkZN+fYH8Etd1vq1wqlffbPj62ZX9Hr9ggU6z8IwCzQ92X/VX/degXB/WfUN+2iyD25scvWAAAAABJRU5ErkJggg==" alt="Gratitude Movement website" />
+    </div>
+    <div class="learn-copy">
+      <span class="headline">Interested in learning more?</span>
+      <span class="small">Scan to learn more about the Gratitude Movement.</span>
+    </div>
+  </section>
   <footer class="footer">
     <div class="message">Thank you for being part of the Gratitude Movement.</div>
     <div class="icons">♡ GREAT SERVICE &nbsp; ♡ GREAT PEOPLE &nbsp; ◉ STRONGER TOGETHER</div>
@@ -176,9 +209,9 @@
     <div class="role">Owner · J &amp; I Hair Salón</div>
   </section>
   <section class="question">
-    ¿Te ayudó Jasmin a
-    <strong>VERTE Y SENTIRTE INCREÍBLE</strong>
-    <span class="heart">¿hoy? ♥</span>
+    ¿Jasmin te hizo
+    <strong>SENTIR INCREÍBLE</strong>
+    <span class="heart">hoy? ♥</span>
   </section>
   <div class="scan-label">¡ESCANEA AQUÍ PARA DAR LAS GRACIAS!</div>
   <div class="main-qr-wrap">
@@ -187,6 +220,16 @@
     </div>
   </div>
   <div class="tip-note">Después de compartir tu agradecimiento, puedes dejar una propina digital opcional.</div>
+  <div class="divider"></div>
+  <section class="learn-more">
+    <div class="static-qr">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASgAAAEoAQAAAADDfFG0AAAB8ElEQVR4nO1awWpDMQyTRv//l7WDbCdtB+sp8ZhdCnl5ggrhOIpTCh/E1yegQQ3qLR4APRIIUQDFmohBV/ZX9IKAUI3xFShsb7qyv6MXCAghEUWIAJ1r1qwr+7soOrUESohF2YFXJ9Rjf1CsRoGRbdd4dUU9gChTALLigyII1Zuu7K+joBRLP3wS0pX9lfxaC68Eost9venK/k5+KQeAIE/4wfOTX88oApItlw1Y+tXaATqzP4vK/dFCKT0FAVEKF9aW/XmUt0M7egLLU/hdDLuyv6JXysIUS5titmFd2d/Kr9KGEEWEiH6e8/YWkV/Ri6jM2rKMsx5fUKRIhXFVWYnQbOr9G8otiVh7Ve9V873ZH0XZrwqSnWn515gav/ocPm+zzIOLv7J+UZx6/4oikPuhG19elGHNpn7tUaI89VhhbxEudvJri+znRANH8GFyr2ZTv1ZwnbPhrMp+IZYRa8v+FopZuYB19BbIkKw3+5Oo9A/V75LSXmyQruwv1fsYOsHWmUiYfs5rbPfbcbqmoOgZlphd2d/xq+EhGIuQm2WF74m6sr9Zv5Td+yhe5TOmfm2x39cqG9Hu4mj6q7+gcgm6fhFkZN+fYH8Etd1vq1wqlffbPj62ZX9Hr9ggU6z8IwCzQ92X/VX/degXB/WfUN+2iyD25scvWAAAAABJRU5ErkJggg==" alt="Gratitude Movement website" />
+    </div>
+    <div class="learn-copy">
+      <span class="headline">¿Quieres saber más?</span>
+      <span class="small">Escanea para conocer el Movimiento de Gratitud.</span>
+    </div>
+  </section>
   <footer class="footer">
     <div class="message">Gracias por ser parte del Movimiento de Gratitud.</div>
     <div class="icons">♡ GRAN SERVICIO &nbsp; ♡ GRAN EQUIPO &nbsp; ◉ MÁS FUERTES JUNTOS</div>
