@@ -80,7 +80,7 @@
 
   .top {
     flex: 0 0 auto;
-    height: 0.95in;
+    height: 0.88in;
     padding: 0.16in 0.28in 0;
     text-align: center;
     border-bottom: 0.012in solid rgba(200,148,53,.85);
@@ -120,8 +120,8 @@
 
   .photo {
     display: block;
-    width: 1.05in;
-    height: 1.05in;
+    width: 0.98in;
+    height: 0.98in;
     margin: 0 auto 0.1in;
     border-radius: 50%;
     object-fit: cover;
@@ -197,8 +197,8 @@
   }
 
   .main-qr {
-    width: 1.38in;
-    height: 1.38in;
+    width: 1.28in;
+    height: 1.28in;
     padding: 0.05in;
     background: #fff;
     border: 0.035in solid var(--gold);
@@ -232,26 +232,31 @@
   .learn-more {
     flex: 0 0 auto;
     display: grid;
-    grid-template-columns: 0.78in 1fr;
+    grid-template-columns: 0.88in 1fr;
     gap: 0.12in;
     align-items: center;
-    margin: 0 0.28in 0.08in;
-    padding: 0.06in 0 0.04in;
+    margin: 0 0.28in 0.06in;
+    padding: 0.06in 0 0.06in;
     border-top: 0.012in solid rgba(200,148,53,.65);
   }
 
   .static-qr {
-    width: 0.70in;
-    height: 0.70in;
-    padding: 0.035in;
+    width: 0.82in;
+    height: 0.82in;
+    padding: 0.07in;
     background: #fff;
     border-radius: 0.04in;
+    overflow: hidden;
+    flex-shrink: 0;
   }
 
   .static-qr img {
     width: 100%;
     height: 100%;
     display: block;
+    object-fit: contain;
+    object-position: center;
+    image-rendering: pixelated;
   }
 
   .learn-copy {
@@ -278,8 +283,8 @@
   .footer {
     flex: 0 0 auto;
     margin-top: auto;
-    min-height: 0.68in;
-    padding: 0.12in 0.28in 0.24in;
+    min-height: 0.58in;
+    padding: 0.10in 0.28in 0.16in;
     text-align: center;
     background: linear-gradient(90deg, #b77f23, #e1b35a, #b77f23);
     color: var(--navy);
@@ -346,7 +351,7 @@
 
     <section class="learn-more">
       <div class="static-qr">
-        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASgAAAEoAQAAAADDfFG0AAAB8ElEQVR4nO1awWpDMQyTRv//l7WDbCdtB+sp8ZhdCnl5ggrhOIpTCh/E1yegQQ3qLR4APRIIUQDFmohBV/ZX9IKAUI3xFShsb7qyv6MXCAghEUWIAJ1r1qwr+7soOrUESohF2YFXJ9Rjf1CsRoGRbdd4dUU9gChTALLigyII1Zuu7K+joBRLP3wS0pX9lfxaC68Eost9venK/k5+KQeAIE/4wfOTX88oApItlw1Y+tXaATqzP4vK/dFCKT0FAVEKF9aW/XmUt0M7egLLU/hdDLuyv6JXysIUS5titmFd2d/Kr9KGEEWEiH6e8/YWkV/Ri6jM2rKMsx5fUKRIhXFVWYnQbOr9G8otiVh7Ve9V873ZH0XZrwqSnWn515gav/ocPm+zzIOLv7J+UZx6/4oikPuhG19elGHNpn7tUaI89VhhbxEudvJri+znRANH8GFyr2ZTv1ZwnbPhrMp+IZYRa8v+FopZuYB19BbIkKw3+5Oo9A/V75LSXmyQruwv1fsYOsHWmUiYfs5rbPfbcbqmoOgZlphd2d/xq+EhGIuQm2WF74m6sr9Zv5Td+yhe5TOmfm2x39cqG9Hu4mj6q7+gcgm6fhFkZN+fYH8Etd1vq1wqlffbPj62ZX9Hr9ggU6z8IwCzQ92X/VX/degXB/WfUN+2iyD25scvWAAAAABJRU5ErkJggg==" alt="Gratitude Movement website" />
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&amp;margin=2&amp;ecc=M&amp;data=https%3A%2F%2Fgratitude-movement.com" alt="Gratitude Movement website" />
       </div>
       <div class="learn-copy">
         <span class="headline">{{LEARN_HEADLINE}}</span>
