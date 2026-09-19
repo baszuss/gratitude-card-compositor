@@ -21,17 +21,31 @@ app.use("/files", express.static(FILES_DIR));
 
 app.get("/health", (req, res) => res.json({ ok: true }));
 
+function webhookAuthorized(req) {
+  const provided =
+    req.header("X-Webhook-Secret") || req.header("X-Internal-Secret") || "";
+  const webhookSecret = process.env.WEBHOOK_SHARED_SECRET;
+  const appSecret = process.env.CARD_COMPOSITOR_SHARED_SECRET;
+  if (webhookSecret && provided === webhookSecret) return true;
+  if (appSecret && provided === appSecret) return true;
+  if (!webhookSecret && !appSecret) return true;
+  return false;
+}
+
+function qrImageForThankYou(thankYouUrl) {
+  return (
+    "https://api.qrserver.com/v1/create-qr-code/?size=600x600&ecc=M&data=" +
+    encodeURIComponent(thankYouUrl)
+  );
+}
+
 app.post("/webhook/card", async (req, res) => {
-  const expectedSecret = process.env.WEBHOOK_SHARED_SECRET;
-  if (expectedSecret) {
-    const provided = req.header("X-Webhook-Secret");
-    if (provided !== expectedSecret) {
-      return res.status(401).json({ error: "invalid webhook secret" });
-    }
+  if (!webhookAuthorized(req)) {
+    return res.status(401).json({ error: "invalid webhook secret" });
   }
 
   const body = req.body || {};
-  const required = ["contact_id", "employee_email", "client_slug", "qr_image_url", "client_print_email"];
+  const required = ["contact_id", "employee_email"];
   const missing = required.filter((k) => !body[k]);
   if (missing.length) {
     return res.status(400).json({ error: `missing fields: ${missing.join(", ")}` });
@@ -49,16 +63,25 @@ app.post("/webhook/card", async (req, res) => {
 async function processCardJob({ body }) {
   const supabaseEmployee = await fetchEmployeeByEmail(body.employee_email);
 
+  const thankYouUrl = `https://ty.gratitude-movement.com/thank-you?e=${supabaseEmployee.qr_slug}`;
+  const qrImageUrl =
+    typeof body.qr_image_url === "string" && /^https?:\/\//i.test(body.qr_image_url.trim())
+      ? body.qr_image_url.trim()
+      : qrImageForThankYou(thankYouUrl);
+
   const employee = {
     full_name: supabaseEmployee.full_name,
     first_name: supabaseEmployee.first_name,
     title: supabaseEmployee.title,
     specialty: supabaseEmployee.specialty,
-    qr_image_url: body.qr_image_url,
+    qr_image_url: qrImageUrl,
     photo_url: supabaseEmployee.photo_url || "",
   };
 
-  const fileBaseName = `${body.client_slug}_${supabaseEmployee.qr_slug}`;
+  const clientSlug = String(body.client_slug || supabaseEmployee.qr_slug || "staff")
+    .replace(/[^a-zA-Z0-9_-]+/g, "-")
+    .replace(/^-+|-+$/g, "") || "staff";
+  const fileBaseName = `${clientSlug}_${supabaseEmployee.qr_slug}`;
   const htmlEn = renderHtmlForLang("en", employee);
   const htmlEs = renderHtmlForLang("es", employee);
 
@@ -88,22 +111,36 @@ async function processCardJob({ body }) {
   // Contact whose own email IS client_print_email, then send against that
   // contactId. (Sending to the employee's contact with a hotel email throws
   // CONVERSATIONS_MSG_INVALID_EMAILTO - fixed 2026-09-14.)
-  const emailEnabled = process.env.CARD_EMAIL_ENABLED === "1";
+  const emailEnabled = process.env.CARD_EMAIL_ENABLED !== "0";
   let emailSent = false;
 
   if (emailEnabled) {
     try {
-      const hotelContactId = await upsertContactByEmail(body.client_print_email);
       await sendCardEmailViaGHL({
-        contactId: hotelContactId,
-        toEmail: body.client_print_email,
+        contactId: body.contact_id,
+        toEmail: body.employee_email,
         employeeFullName: employee.full_name,
         cardPdfUrlEn,
         cardPdfUrlEs,
       });
       emailSent = true;
     } catch (err) {
-      console.error(`[email send failed] contact_id=${body.contact_id}:`, err.message);
+      console.error(`[staff email send failed] contact_id=${body.contact_id}:`, err.message);
+    }
+    const printTo = body.client_print_email;
+    if (printTo && String(printTo).toLowerCase() !== String(body.employee_email).toLowerCase()) {
+      try {
+        const hotelContactId = await upsertContactByEmail(printTo);
+        await sendCardEmailViaGHL({
+          contactId: hotelContactId,
+          toEmail: printTo,
+          employeeFullName: employee.full_name,
+          cardPdfUrlEn,
+          cardPdfUrlEs,
+        });
+      } catch (err) {
+        console.error(`[hotel email send failed] contact_id=${body.contact_id}:`, err.message);
+      }
     }
   } else {
     console.log(
@@ -115,7 +152,7 @@ async function processCardJob({ body }) {
   // or attempted-and-failed - never silently "Emailed" unless actually sent.
   let cardStatus;
   if (!emailEnabled) {
-    cardStatus = "Ready ó hold for ops email";
+    cardStatus = "Ready ù hold for ops email";
   } else if (emailSent) {
     cardStatus = "Emailed";
   } else {
