@@ -20,10 +20,24 @@ async function sendCardEmailViaGHL({ contactId, toEmail, employeeFullName, cardP
     emailTo: toEmail,
     subject: `${employeeFullName} — printable 5×7 cards (English + Spanish)`,
     message:
-      "Two print-ready 5x7 PDFs are attached.\n\n" +
-      'Print at actual size (100%, no "fit to page"). ' +
-      "Choose English or Spanish (or print both stations). " +
-      "Acrylic insert and printing are your responsibility.",
+      "Your printable Thank You cards are attached (English and Spanish).\n\n" +
+      "Print at actual size (100%, no fit to page). Use English, Spanish, or both. " +
+      "The large QR is your personal Thank You page. The small QR is gratitude-movement.com.\n\n" +
+      "English: " +
+      cardPdfUrlEn +
+      "\nSpanish: " +
+      cardPdfUrlEs,
+    html:
+      "<p>Your printable Thank You cards are attached (English and Spanish).</p>" +
+      "<p>Print at <strong>actual size (100%)</strong> — do not use “fit to page.” " +
+      "Choose English, Spanish, or both stations.</p>" +
+      "<p>The <strong>large QR</strong> opens your personal Thank You page. " +
+      "The <strong>small QR</strong> opens gratitude-movement.com.</p>" +
+      "<p>English: <a href=\"" +
+      cardPdfUrlEn +
+      "\">download</a><br/>Spanish: <a href=\"" +
+      cardPdfUrlEs +
+      "\">download</a></p>",
     attachments: [cardPdfUrlEn, cardPdfUrlEs],
   };
 

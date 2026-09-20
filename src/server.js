@@ -61,7 +61,7 @@ app.post("/webhook/card", async (req, res) => {
 });
 
 async function processCardJob({ body }) {
-  const supabaseEmployee = await fetchEmployeeByEmail(body.employee_email);
+  let supabaseEmployee = await fetchEmployeeByEmail(body.employee_email);
 
   const thankYouUrl = `https://ty.gratitude-movement.com/thank-you?e=${supabaseEmployee.qr_slug}`;
   const qrImageUrl =
@@ -69,13 +69,28 @@ async function processCardJob({ body }) {
       ? body.qr_image_url.trim()
       : qrImageForThankYou(thankYouUrl);
 
+  const bodyPhoto =
+    typeof body.photo_url === "string" && /^https?:\/\//i.test(body.photo_url.trim())
+      ? body.photo_url.trim()
+      : "";
+  let photoUrl = bodyPhoto || supabaseEmployee.photo_url || "";
+  if (!photoUrl) {
+    await new Promise((r) => setTimeout(r, 120000));
+    try {
+      supabaseEmployee = await fetchEmployeeByEmail(body.employee_email);
+    } catch (err) {
+      console.error(`[card photo re-lookup failed] contact_id=${body.contact_id}:`, err.message);
+    }
+    photoUrl = bodyPhoto || supabaseEmployee.photo_url || "";
+  }
+
   const employee = {
     full_name: supabaseEmployee.full_name,
     first_name: supabaseEmployee.first_name,
     title: supabaseEmployee.title,
     specialty: supabaseEmployee.specialty,
     qr_image_url: qrImageUrl,
-    photo_url: supabaseEmployee.photo_url || "",
+    photo_url: photoUrl,
   };
 
   const clientSlug = String(body.client_slug || supabaseEmployee.qr_slug || "staff")
