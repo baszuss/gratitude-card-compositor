@@ -10,6 +10,7 @@ const { renderPdf } = require("./render");
 const { patchContactCardFields, upsertContactByEmail } = require("./ghl");
 const { sendCardEmailViaGHL } = require("./ghlEmail");
 const { fetchEmployeeByEmail } = require("./appApi");
+const { persistCardPdfs } = require("./storage");
 
 const app = express();
 app.use(express.json());
@@ -111,11 +112,21 @@ async function processCardJob({ body }) {
   fs.writeFileSync(path.join(FILES_DIR, fileNameEn), pdfEnBuffer);
   fs.writeFileSync(path.join(FILES_DIR, fileNameEs), pdfEsBuffer);
 
-  const baseUrl = process.env.PUBLIC_BASE_URL;
-  if (!baseUrl) throw new Error("PUBLIC_BASE_URL is not set");
+  const stored = await persistCardPdfs({
+    qrSlug: supabaseEmployee.qr_slug,
+    pdfEnBuffer,
+    pdfEsBuffer,
+  });
+  if (!stored) {
+    throw new Error("Lovable rejected the print-card upload");
+  }
 
-  const cardPdfUrlEn = `${baseUrl.replace(/\/$/, "")}/files/${fileNameEn}`;
-  const cardPdfUrlEs = `${baseUrl.replace(/\/$/, "")}/files/${fileNameEs}`;
+  const linkOrigin = (
+    process.env.CARD_LINK_ORIGIN || "https://ty.gratitude-movement.com"
+  ).replace(/\/$/, "");
+  const slug = encodeURIComponent(supabaseEmployee.qr_slug);
+  const cardPdfUrlEn = `${linkOrigin}/print/${slug}/en`;
+  const cardPdfUrlEs = `${linkOrigin}/print/${slug}/es`;
 
   // Until go-live: render + write URLs on the Contact, do not auto-email.
   // Set CARD_EMAIL_ENABLED=1 on Railway only when ops green-lights GHL send.
