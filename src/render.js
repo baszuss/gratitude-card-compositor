@@ -13,7 +13,7 @@ async function renderPdf(html) {
   });
   try {
     const page = await browser.newPage({
-      deviceScaleFactor: 3, // 300 DPI equivalent, per SOP
+      deviceScaleFactor: 2,
     });
     await page.setContent(html, { waitUntil: "networkidle" });
 

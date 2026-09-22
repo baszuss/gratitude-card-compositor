@@ -41,18 +41,36 @@ async function sendCardEmailViaGHL({ contactId, toEmail, employeeFullName, cardP
     attachments: [cardPdfUrlEn, cardPdfUrlEs],
   };
 
-  const res = await fetch(`${GHL_API_BASE}/conversations/messages`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      Version: apiVersion,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(body),
-  });
+  const send = (payload) =>
+    fetch(`${GHL_API_BASE}/conversations/messages`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        Version: apiVersion,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
 
+  let res = await send(body);
   if (!res.ok) {
-    throw new Error(`GHL send-message failed: ${res.status} ${await res.text()}`);
+    const errText = await res.text();
+    if (/25\s*MB|file size/i.test(errText)) {
+      delete body.attachments;
+      body.message =
+        "Your printable Thank You cards are ready (English and Spanish). Download the links below.\n\n" +
+        body.message;
+      body.html =
+        "<p>Your printable Thank You cards are ready (English and Spanish). Use the download links below.</p>" +
+        body.html;
+      res = await send(body);
+      if (!res.ok) {
+        const retryText = await res.text();
+        throw new Error(`GHL send-message failed: ${res.status} ${retryText}`);
+      }
+    } else {
+      throw new Error(`GHL send-message failed: ${res.status} ${errText}`);
+    }
   }
 
   return res.json();
