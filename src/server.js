@@ -149,6 +149,7 @@ async function processCardJob({ body }) {
         employeeFullName: employee.full_name,
         cardPdfUrlEn,
         cardPdfUrlEs,
+        emailLang: body.email_lang === "en" || body.email_lang === "es" ? body.email_lang : "both",
       });
       emailSent = true;
     } catch (err) {
@@ -164,6 +165,7 @@ async function processCardJob({ body }) {
           employeeFullName: employee.full_name,
           cardPdfUrlEn,
           cardPdfUrlEs,
+          emailLang: body.email_lang === "en" || body.email_lang === "es" ? body.email_lang : "both",
         });
       } catch (err) {
         console.error(`[hotel email send failed] contact_id=${body.contact_id}:`, err.message);
