@@ -122,7 +122,7 @@ async function processCardJob({ body }) {
   }
 
   const linkOrigin = (
-    process.env.CARD_LINK_ORIGIN || "https://ty.gratitude-movement.com"
+    process.env.CARD_LINK_ORIGIN || "https://gratitude-movement.com"
   ).replace(/\/$/, "");
   const slug = encodeURIComponent(supabaseEmployee.qr_slug);
   const cardPdfUrlEn = `${linkOrigin}/print/${slug}/en`;
@@ -137,7 +137,8 @@ async function processCardJob({ body }) {
   // Contact whose own email IS client_print_email, then send against that
   // contactId. (Sending to the employee's contact with a hotel email throws
   // CONVERSATIONS_MSG_INVALID_EMAILTO - fixed 2026-09-14.)
-  const emailEnabled = process.env.CARD_EMAIL_ENABLED !== "0";
+  const emailEnabled =
+    body.force_email === true || process.env.CARD_EMAIL_ENABLED !== "0";
   let emailSent = false;
 
   if (emailEnabled) {

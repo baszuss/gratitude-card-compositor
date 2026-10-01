@@ -11,10 +11,11 @@ async function sendCardEmailViaGHL({ contactId, toEmail, employeeFullName, cardP
 
   if (!apiKey) throw new Error("GHL_API_KEY is not set");
 
+  // Conversations rejects emailTo unless it is exactly the Contact's email.
+  // Message the Contact; do not override To.
   const body = {
     type: "Email",
     contactId,
-    emailTo: toEmail,
     subject: `${employeeFullName} — printable 5×7 cards (English + Spanish)`,
     message:
       "Your printable Thank You cards are ready.\n\n" +
